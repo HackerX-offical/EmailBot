@@ -6,18 +6,32 @@ A Python script designed to simulate sending multiple job offer emails from vari
 
 **This tool is for educational and testing purposes only.** Do not use this to spam, harass, or deceive others. The author is not responsible for any misuse of this tool.
 
-## Features
+## Scripts
 
-- **Multiple Senders:** Configurable list of sender email accounts.
-- **Customized Content:** Pre-defined HTML templates for job offers from major tech companies.
-- **Automated Sending:** Iterates through the list of senders and sends the corresponding email to the target address.
-- **Spam Avoidance:** Includes a slight delay between emails to help avoid triggering spam filters.
+This repository contains two scripts with different behaviors:
+
+### 1. `app.py` (Multi-Sender Mode)
+
+- **Purpose:** Sends one email from _each_ configured sender in the `SENDERS` list.
+- **Behavior:** Iterates through the list of sender accounts and sends the specific company email associated with that sender index/key.
+- **Best for:** Testing multiple sender accounts or sending a specific set of emails once.
+
+### 2. `main.py` (Continuous Loop Mode)
+
+- **Purpose:** Continuously sends random job offer emails from a _single_ sender account.
+- **Behavior:**
+  - Runs in cycles: Sends emails for a set duration (default 10 mins), then pauses (default 30 mins).
+  - Randomly selects a tech company for each email.
+  - Fetches and embeds company logos as Base64 images.
+  - Includes retry logic and connection handling.
+- **Best for:** Long-running stress testing or continuous simulation.
 
 ## Prerequisites
 
 - Python 3.x
+- `requests` library (for `main.py`)
 - Gmail accounts for sending emails.
-- **App Passwords:** You must generate App Passwords for each sender Gmail account. Standard passwords will not work if 2-Step Verification is enabled (which is required for App Passwords).
+- **App Passwords:** You must generate App Passwords for each sender Gmail account. Standard passwords will not work if 2-Step Verification is enabled.
 
 ## Setup
 
@@ -28,29 +42,41 @@ A Python script designed to simulate sending multiple job offer emails from vari
     cd EmailBot
     ```
 
-2.  **Configure the script:**
-    Open `app.py` and update the following variables:
+2.  **Install dependencies (for `main.py`):**
 
-    - `TARGET_EMAIL`: The email address that will receive the simulated offers.
-    - `SENDERS`: A list of tuples containing the sender email and their corresponding App Password.
-      ```python
-      SENDERS = [
-          ("your_email1@gmail.com", "your_app_password_1"),
-          ("your_email2@gmail.com", "your_app_password_2"),
-          # ... add more senders
-      ]
-      ```
-    - `EMAILS`: (Optional) You can modify the `subject` and `html` content in the `EMAILS` dictionary to customize the messages.
+    ```bash
+    pip install requests
+    ```
+
+3.  **Configure the scripts:**
+
+    **For `app.py`:**
+    Open `app.py` and update:
+
+    - `TARGET_EMAIL`: The recipient email.
+    - `SENDERS`: List of `(email, app_password)` tuples.
+
+    **For `main.py`:**
+    Open `main.py` and update:
+
+    - `TARGET_EMAIL`: The recipient email.
+    - `SENDER_EMAIL`: Your single sender Gmail address.
+    - `SENDER_PASSWORD`: Your sender App Password.
+    - _Optional:_ Adjust `RUN_DURATION`, `PAUSE_DURATION`, and `EMAIL_DELAY` at the top of the file.
 
 ## Usage
 
-Run the script using Python:
+**To run the multi-sender script:**
 
 ```bash
 python app.py
 ```
 
-The script will iterate through the configured senders and print the status of each email sent.
+**To run the continuous loop script:**
+
+```bash
+python main.py
+```
 
 ## Security Note
 
